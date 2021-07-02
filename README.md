@@ -4,42 +4,6 @@ The goal is to predict 55 regression targets from multivariate time series consi
 What the target variables model is the relative size of a planet transiting a star at different wavelengths.
 Each time series is the (noisy) relative flux of light that is recorded at the respective wavelength.
 
-With our submission, we achieved the 5th place out of 19 submissions. More information is available online:
-https://ariel-datachallenge.azurewebsites.net/ML
-
-
-## Lessons learned
-
-- What went pretty good was our discussions with each other and the other members of our chair. Since we have an
-  expert for almost any aspect of ML, we could collect many valuable ideas about which ideas to pursue and which
-  ones not to. A voting board for ideas (like in a TV contest where the viewers can vote) would have been fun.
-- We should have kept all of our submissions, including the file that has been uploaded (i.e. our predictions), the
-  meta-parameters which produced the model, the results of our own evaluation (i.e. all metrics computed on our own
-  train/test split), and the final score computed by the challenge host.
-  Since the final score included unknown weights for each prediction, it was often not in line with our own metrics.
-  If we would have kept all submissions, we could have targeted our late submissions more tightly at the score, e.g.
-  by finding an accurate correlation between our own metrics and the targets, or by plotting a path of our submissions
-  with multi-dimensional scaling (MDS), maybe even use Bayesian optimization for meta-parameter tuning.
-- In addition to keeping all of our submissions, a git tag for each of them would have enabled a retrospective on the
-  implementation, in case an implicit meta-parameter is made explicit lateron.
-- Submit as much as you can, starting as early as possible. The meta-parameter space is huge and must be populated
-  if one likes to predict the scoring lateron.
-- Since the final score involves unknown weights, it is particularly important to make *robust* predictions. Before
-  we started to use bagging ensembles, we were often under the impression that part of our final score value (and even
-  part our own metrics) was produced by randomness.
-- Building an ensemble, tuning meta-parameters, pre-processing the data and making the final predictions makes up
-  quite a processing pipeline. Any bug in the interfaces between these steps can become quite a show stopper.
-  Therefore, it is important to start early with the implementation of all steps, e.g. by using dummies/placeholders
-  for steps not yet considered in depth.
-- Tune every aspect of your pipeline.
-- Study the rules in detail, e.g. which time zone is the deadline in, what happens if the upload format is incorrect
-  or if the connection breaks down during an upload? Some of the answers to these questions may not be answered by
-  the published rule set but must be tried out early, when the submission account is not yet valuable.
-- Scheduling our submissions better could have saved us a lot of sleep.
-- Enforce a variable naming convention to ease the merging of implementation branches. Whatever is meant to stay
-  should go into the master branch and be distributed to the other relevant branches soon.
-
-
 ## What we did
 
 - We sticked to using deep dense neural networks. This approach was already suggested by the baseline solution and
@@ -150,10 +114,10 @@ The resulting file `/mnt/data/data_set_preprocessed.h5_complete_named_params` co
 
 Training and predictions are taken out in one step. The `main.py` script fits up to 45 ensemble members. Each member is forgotten as soon as it has contributed its predictions. The path of the `--predict` argument is appended with the ensemble size so that predictions of smaller ensembles can be uploaded before the script has finished.
 
+We run model training and prediciton upload via the Baselbot. Assuming an instance of headless selenium is running on ```localhost:444```, you can use
 ```bash
-python3 ecml-discovery-challenge/main.py --predict /mnt/data/pred.csv --complete-data
+python3 -m baselbot --url 'http://localhost:4444/wd/hub'
 ```
-
 
 ## Automated uploads through Selenium
 
