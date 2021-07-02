@@ -109,23 +109,21 @@ python3 ecml-discovery-challenge/bin/preprocess_to_file.py --complete-data /mnt/
 
 The resulting file `/mnt/data/data_set_preprocessed.h5_complete_named_params` contains the scaled test, train and prediction data alongside the preprocessed auxiliary features.
 
-
-## Model training and data prediction
-
-Training and predictions are taken out in one step. The `main.py` script fits up to 45 ensemble members. Each member is forgotten as soon as it has contributed its predictions. The path of the `--predict` argument is appended with the ensemble size so that predictions of smaller ensembles can be uploaded before the script has finished.
-
-We run model training and prediciton upload via the Baselbot. Assuming an instance of headless selenium is running on ```localhost:444```, you can use
-```bash
-python3 -m baselbot --url 'http://localhost:4444/wd/hub'
-```
-
 ## Automated uploads through Selenium
+
+To run the automated upload, you can use the selenium driver within docker.
 
 ```bash
 docker run -it --name selenium -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-firefox
 venv/bin/python submit_data.py --url http://localhost:4444/wd/hub --username TheReturnOfBasel321 --password XXXX -i pred.csv_05_20
 ```
 
+## Model training and data prediction
+
+We run model training and prediction upload via the Baselbot. Assuming an instance of headless selenium is running on ```localhost:444```, you can use
+```bash
+python3 -m baselbot --url 'http://localhost:4444/wd/hub'
+```
 
 # Further documentation
 
