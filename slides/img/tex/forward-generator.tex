@@ -1,0 +1,33 @@
+\begin{tikzpicture}[
+  xscale=1,
+  yscale=0.05,
+  every node/.append style={outer sep=5pt}
+]
+
+\node[
+  text=black,
+  draw=forwardcolor,
+  font=\bfseries,
+  thick,
+  rectangle,
+  rounded corners,
+  preaction={fill=white},
+  pattern=crosshatch dots,
+  pattern color=forwardcolor!35,
+  inner ysep=5pt,
+  inner xsep=10pt,
+  text centered
+] (simulation) at (0,0) {simulation\strut};
+
+\tikzset{ionode/.style={inner sep=0pt, font=\large}}
+\node[ionode, anchor=east, minimum width=12mm] (input) at ($(simulation.west)-(1.25,0)$) {$(\boldsymbol x,\, \boldsymbol\rho)$\strut};
+\node[ionode, anchor=west, minimum width=4mm] (output) at ($(simulation.east)+(1,0)$) {$y$\strut};
+
+\draw[-{Latex[length=2mm]}, thick] (input.east) -- (simulation.west);
+\draw[-{Latex[length=2mm]}, thick] (simulation.east) -- (output.west);
+
+\coordinate (annotations) at ($(simulation.south)-(0,1)$);
+\node[font=\small, minimum width=40mm] at (input|-annotations) {observation + parameters\strut};
+\node[font=\small, minimum width=20mm] at (output|-annotations) {label\strut};
+
+\end{tikzpicture}

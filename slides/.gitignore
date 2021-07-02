@@ -1,0 +1,16 @@
+*.aux
+*.auxlock
+*.bbl
+*.blg
+*.log
+*.nav
+*.out
+*.snm
+*.swp
+*.thm
+*.toc
+
+.DS_Store
+*.synctex.gz
+
+slides-ariel.pdf

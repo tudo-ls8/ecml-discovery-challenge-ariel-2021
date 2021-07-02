@@ -1,0 +1,108 @@
+% 'axis line on top' option
+\makeatletter \newcommand{\pgfplotsdrawaxis}{\pgfplots@draw@axis} \makeatother
+\pgfplotsset{axis line on top/.style={
+  axis line style = white,
+  ticklabel style = white,
+  tick style = white,
+  axis on top = false,
+  after end axis/.append code = {
+    \pgfplotsset{
+      axis line style = black,
+      ticklabel style = black,
+      tick style = black,
+      grid = none
+    }
+    \pgfplotsdrawaxis
+  }
+}}
+
+% elegant legend on the outside
+\pgfplotsset{outside legend/.style = {
+  legend style = {
+    draw = none,
+    fill = none,
+    at = {(1.15,.5)},
+    anchor = west,
+    row sep = .25em,
+    inner sep = 0pt
+  }
+}}
+
+% default axis style
+\pgfplotsset{default axis/.style = {
+  axis line on top,
+  axis line style = {anthracite, semithick},
+  axis background/.style = {fill = white},
+  legend cell align = {left},
+  scaled y ticks = false
+}}
+
+\pgfplotsset{active axis/.style = {%
+  default axis,
+  reverse legend,
+  legend cell align={left}
+}}
+
+% histograms
+\pgfplotsset{histogram axis/.style = {
+  default axis,
+  legend style = {
+    at = {(0.98,0.02)},
+    anchor = south east
+  },
+  legend cell align = left
+}}
+
+\pgfplotsset{histogram plot/.style = {
+  const plot,
+  thick,
+  mark = none
+}}
+
+% progress plots
+\pgfplotsset{progress axis/.style = {
+  default axis
+}}
+
+\pgfplotsset{progress plot/.style = {
+  thick,
+  solid,
+  mark options = {
+    scale = 1.5,
+    fill = white,
+    thick
+  }
+}}
+
+
+\pgfplotsset{active plot/.style = {%
+  mark = none
+}}
+
+\pgfplotsset{a00/.style = {active plot, gray}}
+\pgfplotsset{a01/.style = {active plot, blue}}
+\pgfplotsset{a02/.style = {active plot, green}}
+\pgfplotsset{a03/.style = {active plot, red}}
+
+
+% marks for progress plots
+\pgfplotsset{m00/.style = {mark = none, anthracite, densely dashed}}
+\pgfplotsset{m01/.style = {tu01midlight, mark = *,         every mark/.append style = {draw = tu01middark}, every error bar/.style = {color = tu01}}}
+\pgfplotsset{m02/.style = {tu02midlight, mark = square*,   every mark/.append style = {draw = tu02middark}, every error bar/.style = {color = tu02}}}
+\pgfplotsset{m03/.style = {tu03midlight, mark = triangle*, every mark/.append style = {draw = tu03middark}, every error bar/.style = {color = tu03}}}
+\pgfplotsset{m04/.style = {tu04midlight, mark = diamond*,  every mark/.append style = {draw = tu04middark}, every error bar/.style = {color = tu04}}}
+\pgfplotsset{m05/.style = {tu05midlight, mark = pentagon*, every mark/.append style = {draw = tu05middark}, every error bar/.style = {color = tu05}}}
+\pgfplotsset{m06/.style = {tu06midlight, mark = otimes*,   every mark/.append style = {draw = tu06middark}, every error bar/.style = {color = tu06}}}
+\pgfplotsset{m07/.style = {tu07midlight, mark = oplus*,    every mark/.append style = {draw = tu07middark}, every error bar/.style = {color = tu07}}}
+\pgfplotsset{m08/.style = {tu08midlight, mark = star*,     every mark/.append style = {draw = tu08middark}, every error bar/.style = {color = tu08}}}
+\pgfplotsset{m09/.style = {tu09midlight, mark = x,         every mark/.append style = {draw = tu09middark}, every error bar/.style = {color = tu09}}}
+\pgfplotsset{m10/.style = {tu10midlight, mark = +,         every mark/.append style = {draw = tu10middark}, every error bar/.style = {color = tu10}}}
+\pgfplotsset{m11/.style = {tu11midlight, mark = |,         every mark/.append style = {draw = tu11middark}, every error bar/.style = {color = tu11}}}
+% also: 'asterisk', '-', and most of the above without '*'
+
+% bar plots
+\pgfplotsset{b01/.style={gray!40,every error bar/.style={opacity=1,thick,gray!80},mark=none,draw=none}}
+\pgfplotsset{b02/.style={tu01midlight,postaction={pattern=crosshatch dots, pattern color=tu01middark},every error bar/.style={opacity=1,thick,tu01dark},mark=none,draw=none}}
+\pgfplotsset{b03/.style={tu03midlight,postaction={pattern=north east lines,pattern color=tu03middark},every error bar/.style={opacity=1,thick,tu03dark},mark=none,draw=none}}
+\pgfplotsset{b04/.style={tu02midlight,postaction={pattern=north west lines,pattern color=tu02middark},every error bar/.style={opacity=1,thick,tu02dark},mark=none,draw=none}}
+\pgfplotsset{b05/.style={tu04midlight,postaction={pattern=crosshatch,pattern color=tu04middark},every error bar/.style={opacity=1,thick,tu04dark},mark=none,draw=none}}

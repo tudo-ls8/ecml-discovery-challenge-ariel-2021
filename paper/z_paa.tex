@@ -1,0 +1,96 @@
+\documentclass[crop,tikz]{standalone}
+
+\usepackage{pgfplots,xcolor}
+\usetikzlibrary{patterns}
+
+% color palette
+\colorlet{anthracite}{black!90}
+\definecolor{tu01}{HTML}{84B818}
+\definecolor{tu03}{HTML}{1BB5B5}
+\definecolor{tu06}{HTML}{E3B505}
+
+% mixed and light colors
+\colorlet{tu01light}{tu01!36}
+\colorlet{tu03light}{tu03!32}
+\colorlet{tu06light}{tu06!28}
+
+\pgfplotsset{every axis/.append style={%
+  clip = false,
+  axis line style = {
+    draw = anthracite,
+    thin,
+    rounded corners
+  },
+  scale = .25,
+  semithick,
+  xticklabels = \empty,
+  yticklabel style = {font=\footnotesize}
+}}
+
+\begin{document}
+\begin{tikzpicture}
+
+\node (raw) at (0,0) {%
+  \begin{tikzpicture}
+  \begin{axis}[ymin=.935, ytick={.95,.97,.99}]
+    \addplot[mark=none] table {z_paa_1raw.csv};
+    \coordinate (raw above) at (rel axis cs: .5,1);
+    \coordinate (raw below) at (rel axis cs: .5,0);
+  \end{axis}
+  \node[anchor=south, inner ysep=2pt, outer ysep=0pt, inner xsep=-1cm] at (raw above) {\small raw time series\strut};
+  \node[anchor=north, inner ysep=0pt, outer ysep=0pt] (raw label) at (raw below) {\strut};
+  \end{tikzpicture}
+};
+
+\node[anchor=west] (z) at ([xshift=6mm] raw.east) {%
+  \begin{tikzpicture}
+  \begin{axis}[ytick={-1,0,1}]
+    \addplot[mark=none] table {z_paa_2z.csv};
+    \coordinate (z above) at (rel axis cs: .5,1);
+    \coordinate (z below) at (rel axis cs: .5,0);
+    \coordinate (z se) at (rel axis cs: 0,0);
+    \coordinate (z sw) at (rel axis cs: 1,0);
+  \end{axis}
+  \node[anchor=south, inner ysep=2pt, outer ysep=0pt] at (z above) {\small z scaling\strut};
+  \node[anchor=north, inner ysep=0pt, outer ysep=0pt] (z label) at (z below) {+ $\mu$, $\sigma$\strut};
+  \fill[white] ([yshift=4pt] z se) -- ([xshift=4pt] z se) -- (z se) -- cycle;
+  \draw (z se) -- ([xshift=4pt] z se);
+  \fill[white] ([yshift=4pt] z sw) -- ([xshift=-4pt] z sw) -- (z sw) -- cycle;
+  \draw (z sw) -- ([xshift=-4pt] z sw);
+  \draw[rounded corners] ([yshift=4pt] z se) -- (z se|-z label.south) -- (z sw|-z label.south) -- ([yshift=4pt] z sw);
+  \end{tikzpicture}
+};
+
+\node[anchor=west] (paa) at ([xshift=6mm] z.east) {%
+  \begin{tikzpicture}
+  \begin{axis}[ytick={-1,0,1}]
+    \addplot[mark=none, gray!50] table {z_paa_2z.csv};
+    \addplot[mark=none] table {z_paa_3paa.csv};
+    \coordinate (paa above) at (rel axis cs: .5,1);
+    \coordinate (paa below) at (rel axis cs: .5,0);
+    \coordinate (paa se) at (rel axis cs: 0,0);
+    \coordinate (paa sw) at (rel axis cs: 1,0);
+  \end{axis}
+  \node[anchor=south, inner ysep=2pt, outer ysep=0pt] at (paa above) {\small PAA\strut};
+  \node[anchor=north, inner ysep=0pt, outer ysep=0pt] (paa label) at (paa below) {+ $\bar{\epsilon}$\strut};
+  \fill[white] ([yshift=4pt] paa se) -- ([xshift=4pt] paa se) -- (paa se) -- cycle;
+  \draw (paa se) -- ([xshift=4pt] paa se);
+  \fill[white] ([yshift=4pt] paa sw) -- ([xshift=-4pt] paa sw) -- (paa sw) -- cycle;
+  \draw (paa sw) -- ([xshift=-4pt] paa sw);
+  \draw[rounded corners] ([yshift=4pt] paa se) -- (paa se|-paa label.south) -- (paa sw|-paa label.south) -- ([yshift=4pt] paa sw);
+  \end{tikzpicture}
+};
+
+\draw[semithick, anthracite, ->, line cap=round] ([xshift=1mm] raw.east) -- ([xshift=1mm] z.west); % node[midway, above, font=\small\sffamily] {i)};
+\draw[semithick, anthracite, ->, line cap=round] ([xshift=1mm] z.east) -- ([xshift=1mm] paa.west); % node[midway, above, font=\small\sffamily] {ii)};
+
+% tighten the bounding box
+\coordinate (nw) at ([xshift=4pt, yshift=-4pt] raw.north west);
+\coordinate (ne) at ([yshift=-4pt] paa.north east);
+\coordinate (se) at ([yshift=0pt] paa.south east);
+\coordinate (sw) at ([xshift=4pt, yshift=0pt] raw.south west);
+\pgfresetboundingbox
+\path[use as bounding box] (nw) -- (ne) -- (se) -- (sw) -- cycle;
+
+\end{tikzpicture}
+\end{document}

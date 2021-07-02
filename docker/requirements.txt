@@ -1,0 +1,14 @@
+schedule
+scikit-learn
+scipy
+pandas
+keras
+tensorflow-gpu
+pytest
+tqdm
+numpy
+tables
+h5py
+selenium
+tabulate
+lxml

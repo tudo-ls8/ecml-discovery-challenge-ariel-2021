@@ -1,0 +1,178 @@
+\documentclass[aspectratio=169,10pt,handout]{beamer}
+\usetheme[progressbar=frametitle,noslidenumbers]{metropolis}
+
+% TU DORTMUND-LIKE FONT
+\usepackage[no-math]{fontspec}
+\setsansfont[
+  Ligatures = TeX,
+  BoldFont = FiraSans,
+  ItalicFont = FiraSans-LightItalic,
+  BoldItalicFont = FiraSans-Italic
+]{FiraSans-Light}
+\newfontfamily{\bxseries}{FiraSans-SemiBold}[
+  LetterSpace=3.0,
+  WordSpace=1.33,
+  ItalicFont = FiraSans-SemiBoldItalic
+]
+\usefonttheme[onlymath]{serif}
+
+% TIKZ AND COLOR
+\usepackage{graphicx,color}
+\DeclareGraphicsExtensions{%
+    .pdf,.PDF,%
+    .png,.PNG,%
+    .jpg,.jpeg,.JPG,.JPEG}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+\usetikzlibrary{calc,patterns,shapes,positioning,arrows.meta,shapes.geometric}
+\usetikzlibrary{decorations.pathreplacing}
+\usepgfplotslibrary{fillbetween}
+
+\input{img/colors.tex}
+\input{img/styles.tex}
+
+\setbeamercolor{normal text}{fg=black} % black, not gray
+
+% MARGINS FOR THE TIKZ OVERLAY
+\newlength{\horizontalmargin}
+\setlength{\horizontalmargin}{4mm}
+\newlength{\verticalmargin}
+\setlength{\verticalmargin}{3mm}
+\newlength{\headerheight}
+\setlength{\headerheight}{16mm}
+
+\usepackage[super]{nth}
+
+\title{Active Simulation Data Mining}
+\subtitle{Workshop on Interactive Adaptive Learning at ECML-PKDD 2019}
+\date{September \nth{16}, 2019}
+\author{Mirko Bunse}
+\institute{TU Dortmund, AI Group, 44221 Dortmund, Germany}
+\titlegraphic{\hfill\includegraphics[height=8mm]{img/logo_s876}}
+
+
+\begin{document}
+
+
+\begin{frame}{}
+\begin{tikzpicture}[overlay, remember picture]
+
+% boundary coordinates
+\fill[white] (current page.north west) rectangle (current page.south east); % ensure a clear white background
+\coordinate[shift={(+\horizontalmargin,-\verticalmargin)}] (page north west) at (current page.north west);
+\coordinate[shift={(-\horizontalmargin,-\verticalmargin)}] (page north east) at (current page.north east);
+\coordinate[shift={(+\horizontalmargin,+\verticalmargin)}] (page south west) at (current page.south west);
+\coordinate[shift={(-\horizontalmargin,+\verticalmargin)}] (page south east) at (current page.south east);
+% \draw[ultra thin, gray] (page north west) -- (page north east) -- (page south east) -- (page south west) -- cycle;
+
+% style definitions
+\tikzset{nosep/.style={inner sep=0pt, outer sep=0pt}}
+
+% title
+\tikzset{titlenode/.style={anchor=north west, nosep, text=white, scale=.92, transform shape}}
+\fill[tu01] (current page.north west) rectangle ($(current page.north east) - (0mm,\headerheight)$);
+\node[titlenode] (heading) at (page north west) {\bxseries\Large\strut ARIEL Discovery Challenge};
+\node[titlenode] (authors) at (heading.south west)
+  {\bfseries\normalsize\strut basel321 \hspace*{-1pt} (Mirko Bunse, \hspace*{-1pt} Lukas Heppe, \hspace*{-1pt} and Katharina Morik)};
+
+% logos in footer
+\node[anchor=south east, nosep, inner xsep=5pt, minimum height=10mm]
+  (logo_s876) at (page south east) {\includegraphics[height=9mm]{img/logo_s876}};
+\node[anchor=south west, nosep, inner xsep=3pt, minimum height=10mm]
+  (logo_tudo) at (page south west) {\includegraphics[height=6mm]{img/logo_tudo}};
+
+% coordinates bounding the content area
+\coordinate (content north west) at ($(current page.north west) + (+\horizontalmargin,-\headerheight)$);
+\coordinate (content north east) at ($(current page.north east) + (-\horizontalmargin,-\headerheight)$);
+\coordinate (content south west) at (logo_tudo.north west);
+\coordinate (content south east) at (logo_s876.north east);
+\coordinate (content east) at ($(content north east) !.5! (content south east)$);
+\coordinate (content north) at ($(content north east) !.5! (content north west)$);
+\coordinate (content north west west) at ($(content north west) !.16! (content south west)$);
+\coordinate (content south west west) at ($(content north west) !.92! (content south west)$);
+% \draw[ultra thin, gray] (content north west) -- (content north east) -- (content south east) -- (content south west) -- cycle;
+
+\node[anchor=north, align=center] (architecture) at ([yshift=-3mm] content north) {\parbox{.8\textwidth}{%
+  \includegraphics[width=.8\textwidth]{img/neural-network-architecture}
+}};
+
+\node[anchor=north, align=left, inner sep=2mm] at (architecture.south) {\parbox{\textwidth}{%
+% - we used a deep dense(!) ReLu network with approx 1 Million parameters
+% - we did NOT use the raw data, but a piecewise aggregate approximation (PAA) on Z-scaled time series,
+%   reducing the number of time steps to only 30
+% - however, we maintained the error of the Z scaling and the error of the PAA by computing the first
+%   4 moments of the raw input and the reconstruction error of the PAA, so that no information is lost by these pre-processing steps.
+% - we aggregate the predictions for each planet. There's 100 different instances for each of them,
+%   but we already know that a planet observed with multiple noise instances is still the same planet with the same radii.
+% - we use a bagging ensemble to get stable predictions, which is particularly important due to the weights used in your scoring function
+%   (which we could not assess even approximately)
+% - we did NOT use one of the auxiliary target variables
+% - we did NOT use the final evaluation data in a transfer or semi-supervised style 
+  \begin{itemize}
+  	\item Deep Dense ReLu nets \, {\small with $\approx 10^6$ params}
+  	\item Aggregate predictions for each planet \, {\small having 100 noise instances + bagging}
+  	\item No additional targets
+  	\item Not using the un-labeled data \, {\small to be predicted}
+  \end{itemize}
+}}; 
+
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}{}
+\begin{tikzpicture}[overlay, remember picture]
+
+% boundary coordinates
+\fill[white] (current page.north west) rectangle (current page.south east); % ensure a clear white background
+\coordinate[shift={(+\horizontalmargin,-\verticalmargin)}] (page north west) at (current page.north west);
+\coordinate[shift={(-\horizontalmargin,-\verticalmargin)}] (page north east) at (current page.north east);
+\coordinate[shift={(+\horizontalmargin,+\verticalmargin)}] (page south west) at (current page.south west);
+\coordinate[shift={(-\horizontalmargin,+\verticalmargin)}] (page south east) at (current page.south east);
+% \draw[ultra thin, gray] (page north west) -- (page north east) -- (page south east) -- (page south west) -- cycle;
+
+% style definitions
+\tikzset{nosep/.style={inner sep=0pt, outer sep=0pt}}
+
+% title
+\tikzset{titlenode/.style={anchor=north west, nosep, text=white, scale=.92, transform shape}}
+\fill[tu01] (current page.north west) rectangle ($(current page.north east) - (0mm,\headerheight)$);
+\node[titlenode] (heading) at (page north west) {\bxseries\Large\strut ARIEL Discovery Challenge};
+\node[titlenode] (authors) at (heading.south west)
+  {\bfseries\normalsize\strut basel321 \hspace*{-1pt} (Mirko Bunse, \hspace*{-1pt} Lukas Heppe, \hspace*{-1pt} and Katharina Morik)};
+
+% % logos in footer
+% \node[anchor=south east, nosep, inner xsep=5pt, minimum height=10mm]
+%   (logo_s876) at (page south east) {\includegraphics[height=9mm]{img/logo_s876}};
+% \node[anchor=south west, nosep, inner xsep=3pt, minimum height=10mm]
+%   (logo_tudo) at (page south west) {\includegraphics[height=6mm]{img/logo_tudo}};
+
+% coordinates bounding the content area
+\coordinate (content north west) at ($(current page.north west) + (+\horizontalmargin,-\headerheight)$);
+\coordinate (content north east) at ($(current page.north east) + (-\horizontalmargin,-\headerheight)$);
+\coordinate (content south west) at (logo_tudo.north west);
+\coordinate (content south east) at (logo_s876.north east);
+\coordinate (content east) at ($(content north east) !.5! (content south east)$);
+\coordinate (content north) at ($(content north east) !.5! (content north west)$);
+\coordinate (content north west west) at ($(content north west) !.16! (content south west)$);
+\coordinate (content south west west) at ($(content north west) !.92! (content south west)$);
+% \draw[ultra thin, gray] (content north west) -- (content north east) -- (content south east) -- (content south west) -- cycle;
+
+\node[anchor=north west, align=center] (score) at ([yshift=-5mm] content north west) {\parbox{.9\textwidth}{%
+  \includegraphics[width=.9\textwidth]{img/score}
+}};
+
+\draw[tu02, very thick, rounded corners] ($(score.north west) !.53! (score.north east)$) rectangle ($(score.south west) !.65! (score.south east)$);
+\node[anchor=north, inner sep=2mm, font=\bxseries, text=tu02] at ($(score.south west) !.59! (score.south east)$) {PAA};
+
+\draw[tu02, very thick, rounded corners] ($(score.north west) !.78! (score.north east)$) rectangle ($(score.south west) !.84! (score.south east)$);
+\node[anchor=north, inner sep=2mm, font=\bxseries, text=tu02] at ($(score.south west) !.81! (score.south east)$) {Bagging};
+
+\draw[tu01, very thick] ([xshift=-6mm]$(score.north east) !.1! (score.south east)$) -- node[pos=1, anchor=west, inner sep=2mm, font=\bxseries] {9795.0 (\nth{5})} ++(8mm,0mm);
+
+\end{tikzpicture}
+\end{frame}
+
+
+\end{document}
